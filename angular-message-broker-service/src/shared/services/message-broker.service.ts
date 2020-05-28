@@ -15,16 +15,33 @@ export class MessageBrokerService {
 
     private maxLogEntries: number;
 
-    constructor() { 
+    constructor() {
         this.maxLogEntries = environment.messageBrokerConfig.maxLogEntries;
         this.message = new Subject();
         this.messageLog = [];
     }
 
     public publish(message: MessageBrokerObject) {
-		
+
         this.log(message);
         this.message.next(message);
+    }
+
+    public getLogStackForQueue(queueName: string) {
+        return this.messageLog.filter(l => l.queueName === queueName);
+    }
+
+    public getLastMessageForQueue(queueName: string) {
+        return this.getLogStackForQueue(queueName)?.sort((a,b) => b.id - a.id)[0];
+    }
+
+    public getPreviousMessageForQueue(queueName: string) {
+        const queueStack = this.getLogStackForQueue(queueName);
+        return queueStack.length > 1 ? queueStack[1] : null;
+    }
+
+    public getFirstMessageForQueue(queueName: string) {
+        return this.getLogStackForQueue(queueName)?.sort((a,b) => a.id - b.id)[0];
     }
 
     private log(message: MessageBrokerObject) {
@@ -38,5 +55,5 @@ export class MessageBrokerService {
         console.log(this.messageLog);
 
     }
-	
+
 }
