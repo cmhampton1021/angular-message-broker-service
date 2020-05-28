@@ -1,5 +1,5 @@
 export const messageBrokerConfig = {
-    maxLogEntries: 50,
+    maxLogEntries: 500,
 
     // Queue Names
     testQueueName: 'test.message-broker.put'
